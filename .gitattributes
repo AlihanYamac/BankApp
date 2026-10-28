@@ -1,0 +1,13 @@
+# Satır sonlarını git yönetsin (Windows/Linux farkından kaynaklı uyarıları önler)
+* text=auto
+
+*.cs      text diff=csharp
+*.cshtml  text
+*.csproj  text
+*.slnx    text
+*.json    text
+*.md      text
+
+*.png binary
+*.jpg binary
+*.ico binary
