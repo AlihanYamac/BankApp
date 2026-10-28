@@ -1,0 +1,53 @@
+@model TransferResult
+@{
+    ViewData["Title"] = "Dekont";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <div class="text-center mb-3">
+                <div class="display-6 text-success">✓</div>
+                <h3>Transfer Başarılı</h3>
+                <div class="text-muted small">Referans No: <strong>@Model.ReferenceNo</strong></div>
+            </div>
+
+            <dl class="row receipt mb-0">
+                <dt class="col-5">İşlem Tarihi</dt>
+                <dd class="col-7">@Fmt.Date(Model.CreatedAt)</dd>
+
+                <dt class="col-5">Gönderen IBAN</dt>
+                <dd class="col-7 iban small">@Fmt.Iban(Model.FromIban)</dd>
+
+                <dt class="col-5">Alıcı</dt>
+                <dd class="col-7">@Model.RecipientName<br /><span class="iban small">@Fmt.Iban(Model.ToIban)</span></dd>
+
+                <dt class="col-5">Transfer Türü</dt>
+                <dd class="col-7">@Fmt.TransferTypeName(Model.Type)</dd>
+
+                @if (Model.Description is not null)
+                {
+                    <dt class="col-5">Açıklama</dt>
+                    <dd class="col-7">@Model.Description</dd>
+                }
+
+                <dt class="col-5">Tutar</dt>
+                <dd class="col-7">@Fmt.Money(Model.Amount)</dd>
+
+                <dt class="col-5">Komisyon</dt>
+                <dd class="col-7">@Fmt.Money(Model.Fee)</dd>
+
+                <dt class="col-5">Toplam Çekilen</dt>
+                <dd class="col-7 fw-bold">@Fmt.Money(Model.TotalDebit)</dd>
+
+                <dt class="col-5">Kalan Bakiye</dt>
+                <dd class="col-7">@Fmt.Money(Model.NewBalance)</dd>
+            </dl>
+
+            <div class="d-flex gap-2 mt-4">
+                <a asp-controller="Accounts" asp-action="Index" class="btn btn-outline-secondary flex-fill">Hesaplarım</a>
+                <a asp-action="Create" class="btn btn-primary flex-fill">Yeni Transfer</a>
+            </div>
+        </div>
+    </div>
+</div>

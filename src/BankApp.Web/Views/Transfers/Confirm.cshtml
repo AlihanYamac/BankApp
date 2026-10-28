@@ -1,0 +1,57 @@
+@model TransferConfirmViewModel
+@{
+    ViewData["Title"] = "Transfer Onayı";
+    var p = Model.Preview;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h3 class="mb-3">Transfer Onayı</h3>
+
+            <dl class="row receipt mb-0">
+                <dt class="col-5">Gönderen Hesap</dt>
+                <dd class="col-7">@p.FromAccountName<br /><span class="iban small">@Fmt.Iban(p.FromIban)</span></dd>
+
+                <dt class="col-5">Alıcı</dt>
+                <dd class="col-7">@p.RecipientName<br /><span class="iban small">@Fmt.Iban(p.ToIban)</span></dd>
+
+                <dt class="col-5">Transfer Türü</dt>
+                <dd class="col-7">@Fmt.TransferTypeName(p.Type)</dd>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Form.Description))
+                {
+                    <dt class="col-5">Açıklama</dt>
+                    <dd class="col-7">@Model.Form.Description</dd>
+                }
+
+                <dt class="col-5">Tutar</dt>
+                <dd class="col-7">@Fmt.Money(p.Amount)</dd>
+
+                <dt class="col-5">Komisyon</dt>
+                <dd class="col-7">@Fmt.Money(p.Fee)</dd>
+
+                <dt class="col-5 border-top pt-2">Hesabınızdan Çekilecek</dt>
+                <dd class="col-7 border-top pt-2 fw-bold fs-5">@Fmt.Money(p.TotalDebit)</dd>
+            </dl>
+
+            @if (p.CurrentBalance < p.TotalDebit)
+            {
+                <div class="alert alert-danger mt-3 mb-0">
+                    Bakiyeniz (@Fmt.Money(p.CurrentBalance)) bu işlem için yetersiz.
+                </div>
+            }
+
+            <form asp-action="Execute" method="post" class="mt-4">
+                <input type="hidden" name="FromAccountId" value="@Model.Form.FromAccountId" />
+                <input type="hidden" name="ToIban" value="@p.ToIban" />
+                <input type="hidden" name="Amount" value="@p.Amount.ToString(CultureInfo.InvariantCulture)" />
+                <input type="hidden" name="Description" value="@Model.Form.Description" />
+                <div class="d-flex gap-2">
+                    <a asp-action="Create" class="btn btn-outline-secondary flex-fill">Vazgeç</a>
+                    <button type="submit" class="btn btn-primary flex-fill" disabled="@(p.CurrentBalance < p.TotalDebit)">Onayla ve Gönder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+@model TransferViewModel
+@{
+    ViewData["Title"] = "Para Transferi";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card p-4">
+            <h3 class="mb-1">Para Transferi</h3>
+            <p class="text-muted small mb-3">
+                Kendi hesaplarınız arasında komisyon <strong>0,00 ₺</strong>,
+                başka müşterilere gönderimde <strong>@Fmt.Money(Model.OtherCustomerFee)</strong>'dir.
+            </p>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FromAccountId" class="form-label"></label>
+                    <select asp-for="FromAccountId" asp-items="Model.AccountOptions" class="form-select">
+                        <option value="">Hesap seçiniz</option>
+                    </select>
+                    <span asp-validation-for="FromAccountId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label asp-for="ToIban" class="form-label"></label>
+                    <input asp-for="ToIban" class="form-control iban" placeholder="TR00 0000 0000 0000 0000 0000 00" maxlength="32" />
+                    <span asp-validation-for="ToIban" class="text-danger small"></span>
+                </div>
+
+                @if (Model.MyAccounts.Count > 1)
+                {
+                    <div class="mb-3">
+                        <div class="small text-muted mb-1">Kendi hesabıma gönder:</div>
+                        @foreach (var acc in Model.MyAccounts)
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-secondary me-1 mb-1 js-own-iban"
+                                    data-iban="@acc.Iban" data-id="@acc.Id">@acc.Name</button>
+                        }
+                    </div>
+                }
+
+                <div id="feeInfo" class="small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label"></label>
+                    <input asp-for="Amount" type="number" step="0.01" min="0.01"
+                           value="@Model.Amount?.ToString(CultureInfo.InvariantCulture)" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" placeholder="Opsiyonel" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Devam Et</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Kullanıcıya girdiği IBAN'a göre komisyonu anlık gösterir.
+        // (Asıl hesaplama her zaman sunucuda yapılır; bu sadece bilgilendirme.)
+        (function () {
+            const ownIbans = @Json.Serialize(Model.MyAccounts.Select(a => a.Iban));
+            const fee = '@Fmt.Money(Model.OtherCustomerFee)';
+            const ibanInput = document.getElementById('ToIban');
+            const info = document.getElementById('feeInfo');
+
+            function update() {
+                const iban = ibanInput.value.replace(/\s/g, '').toUpperCase();
+                if (iban.length !== 26) { info.innerHTML = ''; return; }
+                info.innerHTML = ownIbans.includes(iban)
+                    ? '<span class="text-success">✓ Kendi hesabınız — komisyon: 0,00 ₺</span>'
+                    : '<span class="text-warning-emphasis">Başka müşteri hesabı — komisyon: ' + fee + '</span>';
+            }
+
+            document.querySelectorAll('.js-own-iban').forEach(btn => btn.addEventListener('click', () => {
+                ibanInput.value = btn.dataset.iban;
+                update();
+            }));
+            ibanInput.addEventListener('input', update);
+            update();
+        })();
+    </script>
+}

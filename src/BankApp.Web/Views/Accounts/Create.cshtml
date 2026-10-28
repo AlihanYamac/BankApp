@@ -1,0 +1,25 @@
+@model OpenAccountViewModel
+@{
+    ViewData["Title"] = "Yeni Hesap Aç";
+}
+
+<div class="form-auth">
+    <div class="card p-4">
+        <h3 class="mb-3">Yeni Hesap Aç</h3>
+        <p class="text-muted small">Yeni hesabınıza otomatik olarak benzersiz bir IBAN atanacaktır.</p>
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Örn. Birikim Hesabım" autofocus />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Hesap Aç</button>
+            <a asp-action="Index" class="btn btn-link w-100 mt-1">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

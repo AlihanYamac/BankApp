@@ -1,0 +1,37 @@
+@model IReadOnlyList<AccountDto>
+@{
+    ViewData["Title"] = "Hesaplarım";
+    var total = Model.Sum(a => a.Balance);
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div>
+        <h2 class="mb-0">Hesaplarım</h2>
+        <span class="text-muted">Toplam varlık: <strong>@Fmt.Money(total)</strong></span>
+    </div>
+    <div>
+        <a class="btn btn-outline-primary" asp-action="Create">+ Yeni Hesap Aç</a>
+        <a class="btn btn-primary" asp-controller="Transfers" asp-action="Create">Para Gönder</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    @foreach (var account in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card account-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@account.Name</h5>
+                    <div class="iban text-muted mb-3">@Fmt.Iban(account.Iban)</div>
+                    <div class="text-muted small">Kullanılabilir Bakiye</div>
+                    <div class="balance">@Fmt.Money(account.Balance)</div>
+                </div>
+                <div class="card-footer bg-transparent border-0 d-flex gap-2 pb-3">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@account.Id">Hareketler</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Deposit" asp-route-id="@account.Id">Para Yatır</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="Transfers" asp-action="Create" asp-route-fromAccountId="@account.Id">Gönder</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

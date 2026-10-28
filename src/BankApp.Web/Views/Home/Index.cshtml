@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Hoş Geldiniz";
+}
+
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm">
+    <h1 class="display-6 fw-bold">BankApp'e Hoş Geldiniz</h1>
+    <p class="col-md-8 fs-5 text-muted">
+        Hesaplarınızı yönetin, kendi hesaplarınız arasında <strong>komisyonsuz</strong>,
+        diğer müşterilere ise sadece <strong>3,99 ₺</strong> komisyonla para gönderin.
+    </p>
+    <a class="btn btn-primary btn-lg me-2" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
+    <a class="btn btn-outline-primary btn-lg" asp-controller="Auth" asp-action="Register">Müşteri Ol</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>💳 Çoklu Hesap</h5>
+            <p class="text-muted mb-0">Her hesaba otomatik olarak benzersiz ve geçerli bir IBAN atanır.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>💸 Para Transferi</h5>
+            <p class="text-muted mb-0">IBAN ile anında transfer. Kendi hesaplarınız arasında komisyon yok.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>📄 Hesap Hareketleri</h5>
+            <p class="text-muted mb-0">Tüm giriş, çıkış ve komisyonlar ekstrede ayrı ayrı listelenir.</p>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4 small">
+    <strong>Demo hesaplar:</strong> ahmet@@demo.com / ayse@@demo.com — Şifre: <code>Demo123!</code>
+</div>
